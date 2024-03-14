@@ -31,7 +31,7 @@ export const Dot = styled.View`
   height: 8px;
   width: 8px;
   background-color: #09190E;
-  border-radius: 50%;
+  border-radius: 18px;
 
   ${props => props.dotSelected &&
     css`
@@ -58,7 +58,7 @@ export const Button = styled.TouchableOpacity`
   bottom: 32px;
   right: 24px;
   padding: 16px;
-  border-radius: 50%;
+  border-radius: 18px;
   justify-content: center;
   align-items: center;
   background-color: #10E873;
