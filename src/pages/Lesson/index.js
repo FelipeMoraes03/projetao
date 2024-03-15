@@ -95,7 +95,7 @@ const Lesson = () => {
           <View
             style={{
               backgroundColor: '#10E873',
-              borderRadius: '50%',
+              borderRadius: 24,
               alignItems: 'center',
               justifyContent: 'center',
               width: 48,

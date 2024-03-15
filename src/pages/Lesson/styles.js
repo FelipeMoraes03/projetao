@@ -9,7 +9,7 @@ export const Container = styled.View`
 export const ImageContainer = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
-  width: '100%';
+  width: 100%;
   height: ${props => props.isShrink ? 40 : 90}px;
   border-radius: 10px;
   margin-top: 12px;
