@@ -22,7 +22,7 @@ const Subject = () => {
     navigation.navigate('Task', { optionIndex })
   }, [navigation, optionsNames])
 
-  const optionsNames = ['Precificação', 'Introdução à Contabilidade', 'Indicadores e Pensamento Analítuco', 'Matemática Financeira e Sistema de Amortização']
+  const optionsNames = ['Introdução à Contabilidade', 'Formação de Preço', 'Matemática Financeira', 'Sistemas de Amortização']
 
   return (
     <Container>

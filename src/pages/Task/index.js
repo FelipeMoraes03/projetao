@@ -26,10 +26,10 @@ const Task = () => {
   }, [navigation, optionsNames])
 
   const optionsNames = [
-    ['Introdução à Precificação', 'Métodos de Precificação', 'Estratégias de Precificação', 'Gestão de Preço'],
-    ['X1', 'Y1', 'Z1', 'W1'],
-    ['X2', 'Y2', 'Z2', 'W2'],
-    ['X3', 'Y3', 'Z3', 'W3']
+    ['Introdução a Contabilidade', 'Demontrações Contábeis', 'Controle Fluxo de Caixa', 'Introdução a gestão do Capital de Giro'],
+    ['Introdução a Formação de Preço', 'Métodos de Formar Preço', 'Estratégias de Preço', 'Gestão de Preço'],
+    ['Fundamentos da Matemática Financeira', 'Avaliação de métricas e Investimentos', 'Planejamneto e Tomada decisões Financeiras', 'Gestão de Riscos Financeiros'],
+    ['Introdução aos Sistemas de Amortização', 'Sistema de Amortização Constante', 'Sistema de Amortização Francês  -SAF ou Tabela Price', 'Gestão de Emprestimos e Financiamento']
   ]
 
   return (
