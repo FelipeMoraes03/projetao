@@ -51,27 +51,35 @@ const Lesson = () => {
   const [soundPosition, setSoundPosition] = useState(0);
   const [soundDuration, setSoundDuration] = useState(1); // Inicie com 1 para evitar divisão por zero
   const route = useRoute()
-  const { optionIndex } = route.params
+  const { optionIndexLesson, optionIndexSubject } = route.params
 
   const optionsInfo = [
     {
+      title: 'Introdução à Contabilidade',
+      subtitle: 'Introdução a Contabilidade',
       urlVideo: 'GWGL5dBy3-8',
       audio:  'https://drive.google.com/uc?export=download&id=19h91WfCd5hgqRxwy4uL-JA19J2JE8EYx',
       textLesson: 'O campo das finanças para microempreendedores pode ser caracterizado como "a habilidade e o conhecimento de gerenciar os recursos financeiros". Praticamente todos osmicroempreendedores ganham ou angariam fundos, despendem ou investem capital. Asfinanças referem-se ao processo, às instituições, aos mercados e aos instrumentosenvolvidos na movimentação de recursos financeiros entre o microempreendedor, clientes,fornecedores e órgãos governamentais'
     },
     {
+      title: 'Formação de Preço',
+      subtitle: 'Introdução a Formação de Preço',
       urlVideo: '',
       audio: '',
       textLesson: ''
     },
     {
-      urlVideo: '',
-      audio: '',
+      title: 'Matemática Financeira',
+      subtitle: 'Fundamentos da Matemática Financeira',
+      urlVideo: 'TVX3vEd11YY',
+      audio: 'https://drive.google.com/uc?export=download&id=17jA5hG7Ca0oIYXoR_PmiUYeSTf-LsKQi',
       textLesson: ''
     },
     {
-      urlVideo: '',
-      audio: '',
+      title:'Sistemas de Amortização',
+      subtitle: 'Introdução aos Sistemas de Amortização',
+      urlVideo: '1NZGsBx1rXA',
+      audio: 'https://drive.google.com/uc?export=download&id=1TJ56ghN4aw9esCNxJy5_JpveZHYD1NT1',
       textLesson: ''
     }
   ]
@@ -108,7 +116,7 @@ const Lesson = () => {
   const playPauseAudio = async () => {
     if (sound === null) {
       const { sound: soundObject, status } = await Audio.Sound.createAsync(
-        { uri: optionsInfo[optionIndex].audio},
+        { uri: optionsInfo[optionIndexSubject].audio},
         { shouldPlay: true }
      );
       setSound(soundObject);
@@ -152,7 +160,7 @@ const Lesson = () => {
     if (lessonOpened == 'video') {
       return (
         <YoutubeIframe
-          videoId={optionsInfo[optionIndex].urlVideo}
+          videoId={optionsInfo[optionIndexSubject].urlVideo}
           height='100%'
           width='100%'
           play
@@ -161,7 +169,7 @@ const Lesson = () => {
     } else if (lessonOpened == 'text') {
       return (
         <TextLessonContainer>
-          <Text style={{ fontSize: 24 }} >O que são finanças?</Text>
+          <Text style={{ fontSize: 24, textAlign: 'center'}} >{optionsInfo[optionIndexSubject].subtitle}</Text>
 
           <Text
             style={{
@@ -169,7 +177,7 @@ const Lesson = () => {
               fontSize: 12
             }}
           >
-            {optionsInfo[optionIndex].textLesson}
+            {optionsInfo[optionIndexSubject].textLesson}
           </Text>
         </TextLessonContainer>
       )
@@ -215,14 +223,14 @@ const Lesson = () => {
 
   return (
     <Container>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>O que são finanças?</Text>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>{optionsInfo[optionIndexSubject].subtitle}</Text>
       <Text 
         style={{ 
           fontSize: 22,
           marginBottom: lessonOpened == '' ? 80 : 0
         }}
       >
-        Introdução a Finanças - 1/4
+        {optionsInfo[optionIndexSubject].title} - {optionIndexLesson+1}/4
       </Text>
 
       {

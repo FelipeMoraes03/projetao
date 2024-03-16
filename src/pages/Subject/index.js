@@ -18,8 +18,8 @@ const Subject = () => {
 
   const handleOptionSelection = useCallback((index) => {
     setOptionSelected(index)
-    const optionIndex = index
-    navigation.navigate('Task', { optionIndex })
+    const optionIndexSubject = index
+    navigation.navigate('Task', { optionIndexSubject })
   }, [navigation, optionsNames])
 
   const optionsNames = ['Introdução à Contabilidade', 'Formação de Preço', 'Matemática Financeira', 'Sistemas de Amortização']
@@ -31,12 +31,12 @@ const Subject = () => {
           return (
             <Option
               onPress={() => handleOptionSelection(index)}
-              disabled={index < 0}
+              disabled={index == 1}
               key={index}
               style={
                 { marginTop: 16 }
               }
-              isBlocked={index < 0}
+              isBlocked={index == 1}
             >
               <OptionText>{optionsNames[index]}</OptionText>
 
