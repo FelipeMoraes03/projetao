@@ -16,18 +16,18 @@ import {
 const stagesConfig = [
   {
     items: [
-      { label: 'W', value: 'W' },
-      { label: 'X', value: 'X'},
-      { label: 'Y', value: 'Y'},
-      { label: 'Z', value: 'Z'},
+      { label: 'MEI - Microempreendedor Individual', value: 'mei' },
+      { label: 'EI - Empresario Individual', value: 'ei'},
+      { label: 'LTDA - Sociedade Limitada', value: 'ltda'},
+      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'slu'},
+      {label: 'SS- Sociedade Simples Limitada e Pura', value: 'ss'},
     ]
   },
   {
     items: [
-      { label: 'W', value: 'W' },
-      { label: 'X', value: 'X'},
-      { label: 'Y', value: 'Y'},
-      { label: 'Z', value: 'Z'},
+      { label: 'Comércio', value: 'segComercio'},
+      { label: 'Indútria', value: 'segIndustria'},
+      { label: 'Serviços', value: 'segServicos'},
     ]
   },
   {
@@ -117,7 +117,7 @@ const Questionnaire = () => {
                   setValue={setLegalNature}
                   zIndex={3000} // Ensure this is greater for the upper picker
                   zIndexInverse={1000}
-                  textStyle={{ color: 'grey' }}
+                  textStyle={{ color: 'grey'}}
                   placeholder='Selecione'
                 />
 
@@ -125,7 +125,7 @@ const Questionnaire = () => {
                 <DropDownPicker
                   open={openSegment}
                   value={segment}
-                  items={stagesConfig[0].items}
+                  items={stagesConfig[1].items}
                   setOpen={setOpenSegment}
                   setValue={setSegment}
                   zIndex={2000}
