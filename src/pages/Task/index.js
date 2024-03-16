@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { Text } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 import {
   Container,
@@ -14,15 +15,22 @@ import {
 
 const Task = () => {
   const navigation = useNavigation()
+  const route = useRoute()
+  const { optionIndex } = route.params
 
   const [optionSelected, setOptionSelected] = useState(-1)
 
   const handleOptionSelection = useCallback((index) => {
     setOptionSelected(index)
-    navigation.navigate('Lesson')
-  }, [])
+    navigation.navigate('Lesson', { optionIndex })
+  }, [navigation, optionsNames])
 
-  const optionsNames = ['Introdução à Precificação', 'Métodos de Precificação', 'Estratégias de Precificação', 'Gestão de Preço']
+  const optionsNames = [
+    ['Introdução à Precificação', 'Métodos de Precificação', 'Estratégias de Precificação', 'Gestão de Preço'],
+    ['X1', 'Y1', 'Z1', 'W1'],
+    ['X2', 'Y2', 'Z2', 'W2'],
+    ['X3', 'Y3', 'Z3', 'W3']
+  ]
 
   return (
     <Container>
@@ -40,7 +48,7 @@ const Task = () => {
               }
               isBlocked={index !== 0}
             >
-              <OptionText>{optionsNames[index]}</OptionText>
+              <OptionText>{optionsNames[optionIndex][index]}</OptionText>
 
               <OptionCheck
                 optionSelected={optionSelected === index}

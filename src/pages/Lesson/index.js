@@ -2,7 +2,8 @@ import React, { useCallback, useMemo, useState, useEffect  } from 'react';
 import { Text, Image, View, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'
 import YoutubeIframe from 'react-native-youtube-iframe';
-import { Audio } from 'expo-av'; // Importe Audio de expo-av
+import { Audio } from 'expo-av';
+import { useRoute } from '@react-navigation/native';
 
 import {
   AudioLessonContainer,
@@ -46,6 +47,32 @@ const Lesson = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   const [sound, setSound] = useState(null)
 
+  const route = useRoute()
+  const { optionIndex } = route.params
+
+  const optionsInfo = [
+    {
+      urlVideo: 'GWGL5dBy3-8',
+      audio: require('../../../assets/Content/Aula01.mp3'),
+      textLesson: 'O campo das finanças para microempreendedores pode ser caracterizado como "a habilidade e o conhecimento de gerenciar os recursos financeiros". Praticamente todos osmicroempreendedores ganham ou angariam fundos, despendem ou investem capital. Asfinanças referem-se ao processo, às instituições, aos mercados e aos instrumentosenvolvidos na movimentação de recursos financeiros entre o microempreendedor, clientes,fornecedores e órgãos governamentais'
+    },
+    {
+      urlVideo: '',
+      audio: '',
+      textLesson: ''
+    },
+    {
+      urlVideo: '',
+      audio: '',
+      textLesson: ''
+    },
+    {
+      urlVideo: '',
+      audio: '',
+      textLesson: ''
+    }
+  ]
+
   useEffect(() => {
     return sound
       ? () => {
@@ -60,7 +87,7 @@ const Lesson = () => {
     if (sound === null) {
       console.log('Carregando Som');
       const { sound: soundObject, status } = await Audio.Sound.createAsync(
-         require('../../../assets/Content/Aula01.mp3'), // Caminho do seu arquivo de áudio
+         optionsInfo[optionIndex].audio,
          { shouldPlay: true }
       );
       setSound(soundObject);
@@ -101,7 +128,7 @@ const Lesson = () => {
     if (lessonOpened == 'video') {
       return (
         <YoutubeIframe
-          videoId='GWGL5dBy3-8'
+          videoId={optionsInfo[optionIndex].urlVideo}
           height='100%'
           width='100%'
           play
@@ -118,7 +145,7 @@ const Lesson = () => {
               fontSize: 12
             }}
           >
-            O campo das finanças para microempreendedores pode ser caracterizado como "a habilidade e o conhecimento de gerenciar os recursos financeiros". Praticamente todos osmicroempreendedores ganham ou angariam fundos, despendem ou investem capital. Asfinanças referem-se ao processo, às instituições, aos mercados e aos instrumentosenvolvidos na movimentação de recursos financeiros entre o microempreendedor, clientes,fornecedores e órgãos governamentais
+            {optionsInfo[optionIndex].textLesson}
           </Text>
         </TextLessonContainer>
       )
