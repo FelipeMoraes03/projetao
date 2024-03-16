@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect  } from 'react';
 import { Text, Image, View, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'
 import YoutubeIframe from 'react-native-youtube-iframe';
+import { Audio } from 'expo-av'; // Importe Audio de expo-av
 
 import {
   AudioLessonContainer,
@@ -43,9 +44,41 @@ const getLessonsInfo = (lessonOpened) => {
 const Lesson = () => {
   const [lessonOpened, setLessonOpened] = useState('')
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+  const [sound, setSound] = useState(null)
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log('Descarregando Som');
+          sound.unloadAsync(); 
+        }
+      : undefined;
+  }, [sound]);
+
+  const playPauseAudio = async () => {
+    console.log('Tocando Parando Audio');
+    if (sound === null) {
+      console.log('Carregando Som');
+      const { sound: soundObject, status } = await Audio.Sound.createAsync(
+         require('../../../assets/Content/Aula01.mp3'), // Caminho do seu arquivo de áudio
+         { shouldPlay: true }
+      );
+      setSound(soundObject);
+
+      if (status.isPlaying) {
+        setIsAudioPlaying(true);
+      }
+    } else if (isAudioPlaying) {
+      await sound.pauseAsync();
+      setIsAudioPlaying(false);
+    } else {
+      await sound.playAsync();
+      setIsAudioPlaying(true);
+    }
+  };
 
   const toggleIsAudioPlaying = () => {
-    setIsAudioPlaying(!isAudioPlaying)
+    playPauseAudio();
   }
 
   const lessonsSequence = useMemo(() => {
