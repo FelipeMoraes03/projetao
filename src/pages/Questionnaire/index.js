@@ -16,18 +16,18 @@ import {
 const stagesConfig = [
   {
     items: [
-      { label: 'MEI - Microempreendedor Individual', value: 'mei' },
-      { label: 'EI - Empresario Individual', value: 'ei'},
-      { label: 'LTDA - Sociedade Limitada', value: 'ltda'},
-      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'slu'},
-      {label: 'SS- Sociedade Simples Limitada e Pura', value: 'ss'},
+      { label: 'MEI - Microempreendedor Individual', value: 'MEI' },
+      { label: 'EI - Empresario Individual', value: 'EI'},
+      { label: 'LTDA - Sociedade Limitada', value: 'LTDA'},
+      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'SLU'},
+      {label: 'SS- Sociedade Simples Limitada e Pura', value: 'SS'},
     ]
   },
   {
     items: [
-      { label: 'Comércio', value: 'segComercio'},
-      { label: 'Indútria', value: 'segIndustria'},
-      { label: 'Serviços', value: 'segServicos'},
+      { label: 'Comércio', value: 'Comércio'},
+      { label: 'Indútria', value: 'Indústria'},
+      { label: 'Serviços', value: 'Serviços'},
     ]
   },
   {
@@ -85,22 +85,9 @@ const Questionnaire = () => {
 
   const [stage, setStage] = useState(0)
 
-  // const handleNextStage = useCallback(() => {
-  //   if (stage == 0) {
-  //     setStage(stage+1)
-  //   } else if (stage < (stagesConfig.length)-2) {
-  //     if (level == "rightAnswer") {
-  //       setStage(stage+1)
-  //       setLevel(null)
-  //     }
-  //   } else {
-  //     navigation.navigate('Tab')
-  //   }
-  // }, [stage, level])
-
   const handleNextStage = useCallback(() => {
     if (stage == 0) {
-      if (segment != null && legalNature != null) {
+      if (segment && legalNature) {
         setStage(stage+1)
       }
     } else if (level == "rightAnswer") {
@@ -108,19 +95,10 @@ const Questionnaire = () => {
         setStage(stage+1)
         setLevel(null)
       } else {
-        navigation.navigate('Tab')
+        navigation.navigate('Tab', {segment, legalNature})
       }
-    } else {
-      if (stage == 1) {
-        // derecionar para aula "introducao a contabilidade"
-      } else if (stage == 2) {
-        //direcionar para aula "introducao a precificacao"
-      } else if (stage == 3) {
-        // direcionar para aula "matematica financeira"
-      } else {
-        //direcionar para aula "sistemas de amortizacao"
-      }
-      navigation.navigate('Tab')
+    } else if (level) {
+      navigation.navigate('Tab', {segment, legalNature})
     }
   }, [stage, level, segment, legalNature])
 
@@ -185,7 +163,7 @@ const Questionnaire = () => {
       </SelectContainer>
 
       <AdvanceButton onPress={handleNextStage}>
-        <AdvanceButtonText>{level}</AdvanceButtonText>
+        <AdvanceButtonText>Avançar</AdvanceButtonText>
       </AdvanceButton>
     </Container>
   )

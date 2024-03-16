@@ -2,6 +2,7 @@ import { View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { MaterialIcons } from '@expo/vector-icons'
+import { useRoute } from '@react-navigation/native';
 
 import Subject from '../pages/Subject'
 import Chat from '../pages/Chat'
@@ -26,6 +27,8 @@ const LessonRoutes = () => (
 const Tab = createBottomTabNavigator()
 
 function MyTabs() {
+  const route = useRoute()
+  const { segment, legalNature } = route.params
   
   return (
     <Tab.Navigator
@@ -41,6 +44,7 @@ function MyTabs() {
       <Tab.Screen 
         name='Chat' 
         component={Chat} 
+        initialParams={{legalNature: legalNature, segment: segment}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }} >
@@ -65,6 +69,7 @@ function MyTabs() {
       <Tab.Screen 
         name='Profile' 
         component={Profile} 
+        initialParams={{legalNature: legalNature, segment: segment}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }} >

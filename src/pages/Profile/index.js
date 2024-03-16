@@ -13,7 +13,8 @@ import {
   StudyBox,
 } from './styles'
 
-const Profile = () => {
+const Profile = ({ route }) => {
+  const { legalNature, segment } = route.params;
 
   return (
     <Container>
@@ -31,7 +32,7 @@ const Profile = () => {
           }}
         >
           <Name>Isabela Maria</Name>
-          <BusinessType>ME - Salão de beleza</BusinessType>
+          <BusinessType>{legalNature} - {segment}</BusinessType>
         </View>
       </View>
 
