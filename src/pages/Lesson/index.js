@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { Audio } from 'expo-av';
 import { useRoute } from '@react-navigation/native';
+import Slider from '@react-native-community/slider'; //Importa o Slider
 
 import {
   AudioLessonContainer,
@@ -47,13 +48,15 @@ const Lesson = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   const [sound, setSound] = useState(null)
 
+  const [soundPosition, setSoundPosition] = useState(0);
+  const [soundDuration, setSoundDuration] = useState(1); // Inicie com 1 para evitar divisão por zero
   const route = useRoute()
   const { optionIndex } = route.params
 
   const optionsInfo = [
     {
       urlVideo: 'GWGL5dBy3-8',
-      audio: require('../../../assets/Content/Aula01.mp3'),
+      audio:  'https://drive.google.com/uc?export=download&id=19h91WfCd5hgqRxwy4uL-JA19J2JE8EYx',
       textLesson: 'O campo das finanças para microempreendedores pode ser caracterizado como "a habilidade e o conhecimento de gerenciar os recursos financeiros". Praticamente todos osmicroempreendedores ganham ou angariam fundos, despendem ou investem capital. Asfinanças referem-se ao processo, às instituições, aos mercados e aos instrumentosenvolvidos na movimentação de recursos financeiros entre o microempreendedor, clientes,fornecedores e órgãos governamentais'
     },
     {
@@ -77,32 +80,53 @@ const Lesson = () => {
     return sound
       ? () => {
           console.log('Descarregando Som');
-          sound.unloadAsync(); 
+          sound.unloadAsync();
         }
       : undefined;
   }, [sound]);
 
-  const playPauseAudio = async () => {
-    console.log('Tocando Parando Audio');
-    if (sound === null) {
-      console.log('Carregando Som');
-      const { sound: soundObject, status } = await Audio.Sound.createAsync(
-         optionsInfo[optionIndex].audio,
-         { shouldPlay: true }
-      );
-      setSound(soundObject);
+  useEffect(() => {
+    if (sound) {
+      sound.setOnPlaybackStatusUpdate(updatePlaybackStatus);
+    }
+  }, [sound]); 
 
-      if (status.isPlaying) {
-        setIsAudioPlaying(true);
+  const updatePlaybackStatus = (status) => {
+    if (status.isLoaded) {
+      setSoundPosition(status.positionMillis);
+      setSoundDuration(status.durationMillis || 1);
+  
+      setIsAudioPlaying(status.isPlaying);
+  
+      if (status.didJustFinish) {
+        setIsAudioPlaying(false);
+        setSoundPosition(0);
       }
-    } else if (isAudioPlaying) {
-      await sound.pauseAsync();
-      setIsAudioPlaying(false);
-    } else {
-      await sound.playAsync();
-      setIsAudioPlaying(true);
     }
   };
+
+  const playPauseAudio = async () => {
+    if (sound === null) {
+      const { sound: soundObject, status } = await Audio.Sound.createAsync(
+        { uri: optionsInfo[optionIndex].audio},
+        { shouldPlay: true }
+     );
+      setSound(soundObject);
+      soundObject.setOnPlaybackStatusUpdate(updatePlaybackStatus);
+      setIsAudioPlaying(status.isPlaying);
+    } else if (isAudioPlaying) {
+      await sound.pauseAsync();
+    } else {
+      await sound.playAsync();
+    }
+  };
+
+  // Adicione a função para lidar com a mudança de valor do Slider
+  const onSliderValueChange = useCallback(async (value) => {
+    if (sound !== null) {
+      await sound.setPositionAsync(value);
+    }
+  }, [sound]);
 
   const toggleIsAudioPlaying = () => {
     playPauseAudio();
@@ -152,6 +176,17 @@ const Lesson = () => {
     } else {
       return (
         <AudioLessonContainer>
+          <Slider
+              style={{ width: '100%', height: 40 }}
+              minimumValue={0}
+              maximumValue={soundDuration}
+              value={soundPosition}
+              onSlidingComplete={onSliderValueChange} // Atualizar a posição do áudio quando o usuário termina de arrastar o slider
+              onValueChange={onSliderValueChange}
+              minimumTrackTintColor='#10E873'
+              maximumTrackTintColor="#fff"
+              thumbTintColor = '#10E873'
+            />
           <View
             style={{
               backgroundColor: '#10E873',
@@ -170,6 +205,9 @@ const Lesson = () => {
               }
             </TouchableOpacity>
           </View>
+          <Text style={{ fontSize: 16, marginTop : 10 }}>
+            {`${Math.floor(soundPosition / 60000)}:${((soundPosition % 60000) / 1000).toFixed(0).padStart(2, '0')}`}
+            </Text>
         </AudioLessonContainer>
       )
     }
