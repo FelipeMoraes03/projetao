@@ -48,3 +48,22 @@ export const AdvanceButtonText = styled.Text`
   font-size: 18px;
 `;
 
+export const InputContainer = styled.View`
+  flex-direction: row;
+  height: 40px;
+  color: #fff;
+  font-size: 16px;
+  border-width: 1px;
+  border-color: #09190E;
+  border-radius: 12px;
+  padding-right: 6px;
+  padding-left: 16px;
+  align-items: center;
+  margin-top: auto;
+`;
+
+export const Input = styled.TextInput`
+  flex: 1;
+  margin-right: 8px;
+`
+

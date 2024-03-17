@@ -34,3 +34,4 @@ export const AudioLessonContainer = styled.View`
   align-items: center;
   justify-content: center;
 `
+

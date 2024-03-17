@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useNavigation } from '@react-navigation/native'
+import { KeyboardAvoidingView, Platform, ScrollView  } from 'react-native';
 
 import {
   Container,
@@ -10,6 +11,8 @@ import {
   SelectLabel,
   AdvanceButton,
   AdvanceButtonText,
+  InputContainer,
+  Input,
 } from './styles'
 
 
@@ -76,7 +79,8 @@ const Questionnaire = () => {
   const navigation = useNavigation()
 
   const [legalNature, setLegalNature] = useState(null)
-  const [segment, setSegment] = useState(null)
+  const [segment, setSegment] = useState('')
+  const [userName, setuserName] = useState('')
   const [level, setLevel] = useState(null)
 
   const [openLegalNature, setOpenLegalNature] = useState(false)
@@ -103,69 +107,85 @@ const Questionnaire = () => {
   }, [stage, level, segment, legalNature])
 
   return (
-    <Container>
-      <Title>{stage == 0 ? 'Qual o seu perfil?' : 'Nível de conhecimento'}</Title>
-      <Description>
-        {stage == 0
-          ? 'Para melhor atender suas necessidades primeiro precisamos entender melhor sobre você, seu negócio e seus conhecimentos sobre finanças.'
-          : 'Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.'
-        }
-      </Description>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <ScrollView keyboardShouldPersistTaps='handled' contentContainerStyle={{ flexGrow: 1 }}>
+        <Container>
+          <Title>{stage == 0 ? 'Qual o seu perfil?' : 'Nível de conhecimento'}</Title>
+          <Description>
+            {stage == 0
+              ? 'Para melhor atender suas necessidades primeiro precisamos entender melhor sobre você, seu negócio e seus conhecimentos sobre finanças.'
+              : 'Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.'
+            }
+          </Description>
 
-      <SelectContainer>
-        {
-          stage == 0
-            ?
-              <>
-                <SelectLabel>Natureza jurídica</SelectLabel>
-                <DropDownPicker
-                  open={openLegalNature}
-                  value={legalNature}
-                  items={stagesConfig[0].items}
-                  setOpen={setOpenLegalNature}
-                  setValue={setLegalNature}
-                  zIndex={3000} // Ensure this is greater for the upper picker
-                  zIndexInverse={1000}
-                  textStyle={{ color: 'grey'}}
-                  placeholder='Selecione'
-                />
+          <SelectContainer>
+            {
+              stage == 0
+                ?
+                  <>
 
-                <SelectLabel>Segmento de atuação</SelectLabel>
-                <DropDownPicker
-                  open={openSegment}
-                  value={segment}
-                  items={stagesConfig[1].items}
-                  setOpen={setOpenSegment}
-                  setValue={setSegment}
-                  zIndex={2000}
-                  textStyle={{ color: 'grey' }}
-                  placeholder='Selecione'
-                />
-              </>
-            : <>
-                <SelectLabel style={{ textAlign: 'center' }}>
-                  {stagesConfig[stage+1].label}
-                </SelectLabel>
-                <DropDownPicker
-                  open={openLevel}
-                  value={level}
-                  items={stagesConfig[stage+1].items}
-                  setOpen={setOpenLevel}
-                  setValue={setLevel}
-                  zIndex={3000} // Ensure this is greater for the upper picker
-                  zIndexInverse={1000}
-                  textStyle={{ color: 'grey', fontSize: stagesConfig[stage+1].fontSize}}
-                  placeholder='Selecione'
-                />
-              </>
-        }
-        
-      </SelectContainer>
+                    <SelectLabel>Nome</SelectLabel>
+                    <InputContainer>
+                      <Input
+                        keyboardAppearance='dark'
+                        onChangeText={setuserName}
+                        value={userName}
+                      />
+                    </InputContainer>
 
-      <AdvanceButton onPress={handleNextStage}>
-        <AdvanceButtonText>Avançar</AdvanceButtonText>
-      </AdvanceButton>
-    </Container>
+                    <SelectLabel>Natureza jurídica</SelectLabel>
+                    <DropDownPicker
+                      open={openLegalNature}
+                      value={legalNature}
+                      items={stagesConfig[0].items}
+                      setOpen={setOpenLegalNature}
+                      setValue={setLegalNature}
+                      zIndex={3000} // Ensure this is greater for the upper picker
+                      zIndexInverse={1000}
+                      textStyle={{ color: 'grey'}}
+                      placeholder='Selecione'
+                    />
+
+                    <SelectLabel>Segmento de atuação</SelectLabel>
+                    <InputContainer>
+                      <Input
+                        keyboardAppearance='dark'
+                        onChangeText={setSegment}
+                        value={segment}
+                      />
+                    </InputContainer>
+
+                  </>
+                : <>
+                    <SelectLabel style={{ textAlign: 'center' }}>
+                      {stagesConfig[stage+1].label}
+                    </SelectLabel>
+                    <DropDownPicker
+                      open={openLevel}
+                      value={level}
+                      items={stagesConfig[stage+1].items}
+                      setOpen={setOpenLevel}
+                      setValue={setLevel}
+                      zIndex={3000} // Ensure this is greater for the upper picker
+                      zIndexInverse={1000}
+                      textStyle={{ color: 'grey', fontSize: stagesConfig[stage+1].fontSize}}
+                      placeholder='Selecione'
+                    />
+                  </>
+            }
+            
+          </SelectContainer>
+
+          <AdvanceButton onPress={handleNextStage}>
+            <AdvanceButtonText>Avançar</AdvanceButtonText>
+          </AdvanceButton>
+        </Container>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
