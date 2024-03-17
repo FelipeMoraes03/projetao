@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Image, Text } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../../hooks/auth';
 
@@ -39,6 +40,7 @@ const phrases = [
 ]
 
 const Welcome = () => {
+  const navigation = useNavigation()
   const { signIn } = useAuth()
 
   const [dotSelected, setDotSelected] = useState(0)
@@ -78,7 +80,7 @@ const Welcome = () => {
                   <Text style={{ fontSize: 14 }} >Quero conhecer o app</Text>
                 </MeetAppButton>
           
-                <JumpTutorialButton onPress={signIn}>
+                <JumpTutorialButton onPress={() => navigation.navigate('Questionnaire')}>
                   <Text style={{ fontSize: 11 }} >Pular tutorial</Text>
                 </JumpTutorialButton>
               </>

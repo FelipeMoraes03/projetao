@@ -18,10 +18,11 @@ const Subject = () => {
 
   const handleOptionSelection = useCallback((index) => {
     setOptionSelected(index)
-    navigation.navigate('Task')
-  }, [])
+    const optionIndexSubject = index
+    navigation.navigate('Task', { optionIndexSubject })
+  }, [navigation, optionsNames])
 
-  const optionsNames = ['Precificação', 'Introdução à Contabilidade', 'Indicadores e Pensamento Analítuco', 'Matemática Financeira e Sistema de Amortização']
+  const optionsNames = ['Introdução à Contabilidade', 'Formação de Preço', 'Matemática Financeira', 'Sistemas de Amortização']
 
   return (
     <Container>
@@ -30,22 +31,20 @@ const Subject = () => {
           return (
             <Option
               onPress={() => handleOptionSelection(index)}
-              disabled={index !== 0}
+              disabled={index == 1}
               key={index}
               style={
-                index !== 0 && { marginTop: 16 }
+                { marginTop: 16 }
               }
-              isBlocked={index !== 0}
+              isBlocked={index == 1}
             >
               <OptionText>{optionsNames[index]}</OptionText>
 
-              {index === 0 &&
                 <OptionCheck
                   // optionSelected={optionSelected === index}
                 >
                   {/* {optionSelected === index && <MaterialIcons name='check' size={15} color='#fff' />} */}
                 </OptionCheck>
-              }
             </Option>
           )
         })

@@ -16,57 +16,57 @@ import {
 const stagesConfig = [
   {
     items: [
-      { label: 'MEI - Microempreendedor Individual', value: 'mei' },
-      { label: 'EI - Empresario Individual', value: 'ei'},
-      { label: 'LTDA - Sociedade Limitada', value: 'ltda'},
-      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'slu'},
-      {label: 'SS- Sociedade Simples Limitada e Pura', value: 'ss'},
+      { label: 'MEI - Microempreendedor Individual', value: 'MEI' },
+      { label: 'EI - Empresario Individual', value: 'EI'},
+      { label: 'LTDA - Sociedade Limitada', value: 'LTDA'},
+      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'SLU'},
+      {label: 'SS- Sociedade Simples Limitada e Pura', value: 'SS'},
     ]
   },
   {
     items: [
-      { label: 'Comércio', value: 'segComercio'},
-      { label: 'Indútria', value: 'segIndustria'},
-      { label: 'Serviços', value: 'segServicos'},
+      { label: 'Comércio', value: 'Comércio'},
+      { label: 'Indútria', value: 'Indústria'},
+      { label: 'Serviços', value: 'Serviços'},
     ]
   },
   {
     label: "Qual dos seguintes termos representa a diferença entre a receita total e os custos totais de um negócio?",
     items: [
-      { label: 'Lucro Líquido', value: 'answerBasic1' },
-      { label: 'Margem de Lucro', value: 'answerBasic2' },
-      { label: 'Fluxo de Caixa', value: 'answerBasic3' },
-      { label: 'Despesas Operacionais', value: 'answerBasic4' },
+      { label: 'Lucro Líquido', value: "rightAnswer" },
+      { label: 'Margem de Lucro', value: "wrongAnswer1" },
+      { label: 'Fluxo de Caixa', value: "wrongAnswer2" },
+      { label: 'Despesas Operacionais', value: "wrongAnswer3" },
     ],
     fontSize: 16
   },
   {
     label: "Um microempreendedor deseja calcular a margem de lucro de seus produtos. Qual a fórmula correta para calcular a margem de lucro?",
     items: [
-      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Receita Total', value: 'answerIntermediary1' },
-      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Custo Total', value: 'answerIntermediary2' },
-      { label: 'Margem de Lucro = (Receita Total / Custo Total) * 100', value: 'answerIntermediary3' },
-      { label: 'Margem de Lucro = (Custo Total / Receita Total) * 100', value: 'answerIntermediary4' },
+      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Receita Total', value: "wrongAnswer1" },
+      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Custo Total', value: "rightAnswer" },
+      { label: 'Margem de Lucro = (Receita Total / Custo Total) * 100', value: "wrongAnswer2" },
+      { label: 'Margem de Lucro = (Custo Total / Receita Total) * 100', value: "wrongAnswer3" },
     ],
     fontSize: 13
   },
   {
     label: "Ao expandir um negócio, um microempreendedor precisa decidir entre financiamento de curto prazo e financiamento de longo prazo. Qual das seguintes afirmativas é verdadeira em relação a essas opções?",
     items: [
-      { label: 'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.', value: 'answerAdvanced1' },
-      { label: 'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.', value: 'answerAdvanced2' },
-      { label: 'Financiamento de curto prazo é menos arriscado devido a obrigações de pagamento mais longas.', value: 'answerAdvanced3' },
-      { label: 'Financiamento de longo prazo é apropriado para investimentos de curto prazo.', value: 'answerAdvanced4' },
+      { label: 'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.', value: "wrongAnswer1" },
+      { label: 'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.', value: "rightAnswer" },
+      { label: 'Financiamento de curto prazo é menos arriscado devido a obrigações de pagamento mais longas.', value: "wrongAnswer2" },
+      { label: 'Financiamento de longo prazo é apropriado para investimentos de curto prazo.', value: "wrongAnswer3" },
     ],
     fontSize: 11
   },
   {
     label: "Um microempreendedor está considerando a diversificação de seus investimentos. Qual das seguintes opções de investimento é mais apropriada para reduzir o risco do portfólio?",
     items: [
-      { label: 'Investir todo o capital em ações de uma única empresa.', value: 'answerExpert1' },
-      { label: 'Manter todo o capital em uma conta poupança.', value: 'answerExpert2' },
-      { label: 'Diversificar o investimento em diferentes classes de ativos, como ações e títulos.', value: 'answerExpert3' },
-      { label: 'Investir apenas em setores relacionados ao negócio principal.', value: 'answerExpert4' },
+      { label: 'Investir todo o capital em ações de uma única empresa.', value: "wrongAnswer1" },
+      { label: 'Manter todo o capital em uma conta poupança.', value: "wrongAnswer2" },
+      { label: 'Diversificar o investimento em diferentes classes de ativos, como ações e títulos.', value: "rightAnswer" },
+      { label: 'Investir apenas em setores relacionados ao negócio principal.', value: "wrongAnswer3" },
     ],
     fontSize: 11
   }
@@ -86,12 +86,21 @@ const Questionnaire = () => {
   const [stage, setStage] = useState(0)
 
   const handleNextStage = useCallback(() => {
-    if (stage < (stagesConfig.length)-2) {
-      setStage(stage+1)
-    } else {
-      navigation.navigate('Welcome')
+    if (stage == 0) {
+      if (segment && legalNature) {
+        setStage(stage+1)
+      }
+    } else if (level == "rightAnswer") {
+      if (stage < (stagesConfig.length)-2) {
+        setStage(stage+1)
+        setLevel(null)
+      } else {
+        navigation.navigate('Tab', {segment, legalNature})
+      }
+    } else if (level) {
+      navigation.navigate('Tab', {segment, legalNature})
     }
-  }, [stage])
+  }, [stage, level, segment, legalNature])
 
   return (
     <Container>

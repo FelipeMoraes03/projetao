@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Text, KeyboardAvoidingView, Platform, ScrollView, Image, Keyboard  } from 'react-native'
-
+import { ActivityIndicator, View, Text, KeyboardAvoidingView, Platform, ScrollView, Image, Keyboard } from 'react-native';
+import OpenAI from "openai";
 import { MaterialIcons } from '@expo/vector-icons'
+
+import { OPENAI_API_KEY } from '@env';
 
 import { 
   Container,
@@ -12,11 +14,26 @@ import {
   MessageContainer,
 } from './styles'
 
-const Chat = () => {
+try{
+  const openai = new OpenAI({
+    apiKey: OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true
+  });
+} finally {}
+
+let gptPrompt = `"Maria é uma assistente virtual integrada à plataforma de aprendizado Capacita, direcionada a Microempreendedores Individuais (MEI) e Microempresas (ME). Seu papel vai além de responder a dúvidas técnicas; ela também auxilia os usuários na navegação pela plataforma. Após o usuário completar um questionário inicial, Maria fornece assistência personalizada, sugerindo cursos alinhados ao perfil do usuário, baseado nas informações coletadas sobre seu negócio e conhecimento prévio. Os usuários podem escolher entre áudio, texto ou vídeo para consumir o conteúdo dos cursos, desenvolvidos para ser breves, diretos e fáceis de entender.
+Após a conclusão de cada módulo, o usuário pode interagir com Maria para esclarecer dúvidas residuais, e ela pode oferecer recomendações de conteúdo adicional para aprimorar ainda mais o aprendizado e o desenvolvimento do negócio. Maria está sempre disponível através de um botão no canto inferior da tela, pronta para esclarecer dúvidas pontuais e oferecer sugestões relevantes de cursos, considerando o progresso e as necessidades específicas de cada usuário na plataforma Capacita. Ao final de cada interação, Maria recomendará um curso em um novo parágrafo, isolado e objetivo, escolhendo entre: Introdução à Finanças, Introdução à Contabilidade, Contabilidade, Planejamento Financeiro, Valor do Dinheiro, Matemática financeira, Impostos, Finanças Corporativas.
+Dê uma resposta sucinta, de acordo com as seguintes informações do usuário: "`
+
+const Chat = ({ route }) => {
+  const { legalNature, segment } = route.params;
+  gptPrompt = gptPrompt + "Segmento de atuação = " + segment + " - Natureja jurídica = " + legalNature
+
   const [isIntroduction, setIsIntroduction] = useState(true)
   const [inputText, setInputText] = useState('')
   const [messages, setMessages] = useState([])
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const scrollViewRef = useRef()
 
@@ -35,34 +52,32 @@ const Chat = () => {
   }, [])
 
   const handleSendText = async () => {
-    if (isIntroduction) setIsIntroduction(false);
+    if (isIntroduction) setIsIntroduction(false)
   
-    // Adiciona a mensagem do usuário primeiro
-    setMessages((prevMessages) => [...prevMessages, inputText]);
+    setMessages((prevMessages) => [...prevMessages, inputText])
   
-    setInputText('');
-  
+    setInputText('')
+    setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:8000/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: inputText,
-        }),
+      const response = await openai.chat.completions.create({
+        messages: [{"role": "system", "content": gptPrompt},
+            {"role": "user", "content": inputText}],
+        //model: "gpt-4-turbo-preview",
+        model: "gpt-3.5-turbo",
       });
   
-      if (!response.ok) {
-        throw new Error('Erro na requisição');
-      }
+      // if (!response.ok) {
+      //   throw new Error('Erro na requisição');
+      // }
   
-      const data = await response.json();
+      const data = response.choices[0].message.content;
   
-      setMessages((prevMessages) => [...prevMessages, data.message]);
+      setMessages((prevMessages) => [...prevMessages, data]);
     } catch (error) {
       console.error('Erro ao buscar dados da API:', error);
       setMessages((prevMessages) => [...prevMessages, 'Desculpe, ocorreu um erro.']);
+    } finally {
+      setIsLoading(false);
     }
   
     setTimeout(() => {
@@ -130,6 +145,12 @@ const Chat = () => {
                     </MessageContainer>
                   )
                 })}
+                {isLoading && (
+                  <View style={{ alignItems: 'flex-start', margin: 20 }}>
+                    <ActivityIndicator size="large" color="green" />
+                  </View>
+                )}
+
               </ScrollView>
           }
         </TextContainer>
