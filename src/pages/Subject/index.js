@@ -128,12 +128,12 @@ const Subject = ({ route }) => {
             return (
               <Option
                 onPress={() => handleOptionSelection(index)}
-                disabled={index == 1}
+                disabled={index == 0}
                 key={index}
                 style={
                   { marginTop: 16 }
                 }
-                isBlocked={index == 1}
+                isBlocked={index == 0}
               >
                 <OptionText>{optionsNames[index]}</OptionText>
 

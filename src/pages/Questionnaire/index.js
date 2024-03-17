@@ -1,7 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useNavigation } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView  } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, LogBox  } from 'react-native';
+
+LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+
 
 import {
   Container,
