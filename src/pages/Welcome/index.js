@@ -76,7 +76,7 @@ const Welcome = () => {
                 <MaterialIcons name='arrow-forward' size={32} color='black' />
               </Button>
             : <>
-                <MeetAppButton>
+                <MeetAppButton onPress={() => navigation.navigate('Subject', { showTutorial: true })}>
                   <Text style={{ fontSize: 14 }} >Quero conhecer o app</Text>
                 </MeetAppButton>
           

@@ -51,7 +51,13 @@ const Profile = ({ route }) => {
       <DetailsContainer>
         <DetailsTitle>Caps</DetailsTitle>
 
-        <Image source={require('../../../assets/Profile/coin.png')} />
+        <View
+          style={{ flexDirection: 'row' }}
+        >
+          <Text style={{ marginRight: 8, fontWeight: 'bold' }} >30</Text>
+          
+          <Image source={require('../../../assets/Profile/coin.png')} />
+        </View>
       </DetailsContainer>
 
       <DetailsContainer>

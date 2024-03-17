@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components/native'
 export const Container = styled.View`
   flex: 1;
   align-items: center;
-  justify-content: center;
+  justify-content: ${props => props.showTutorial ? 'center' : 'flex-start'};
 `
 export const Option = styled.TouchableOpacity`
   flex-direction: row;
@@ -58,4 +58,60 @@ export const Button = styled.TouchableOpacity`
 
 export const ButtonText = styled.Text`
   font-size: 16px;
+`
+
+export const Modal = styled.View`
+  background-color: #09190E7D;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  padding: 60px 16px 40px;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const DotContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`
+
+export const Dot = styled.View`
+  height: 7px;
+  width: 50px;
+  border-radius: 25px;
+  background-color: ${props => props.isSelected ? '#10E873' : '#09190E'};
+`
+
+export const MessageContainer = styled.View`
+  background-color: #10E873;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 20px;
+  border-top-left-radius: 0px;
+  margin-bottom: 12px;
+  width: 260px;
+  margin-left: 8px;
+  margin-top: 32px;
+`
+
+export const ArrowContainer = styled.View`
+  flex-direction: row;
+  justify-content: ${props => props.isStart ? 'center' : 'space-between'};
+  width: 100%;
+`
+
+export const GreyContainer = styled.View`
+  width: 375px;
+  height: 200px;
+  border-radius: 0 0 28px 28px;
+  background-color: #D9D9D9;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 60px;
 `

@@ -104,7 +104,7 @@ const Chat = ({ route }) => {
           {isIntroduction
             ? <>
                 <Text style={{ fontSize: 24 }} >
-                  Olá, sou a Maria!
+                  Olá, sou a Sofia!
                 </Text>
 
                 <Text style={{ fontSize: 20 }} >
@@ -113,9 +113,11 @@ const Chat = ({ route }) => {
 
                 {!isKeyboardVisible &&
                   <Image
-                    source={require('../../../assets/Chat/bot.png')} 
+                    source={require('../../../assets/Chat/sofia-big.png')}
                     style={{
-                      marginTop: 'auto'
+                      marginTop: 40,
+                      width: 280,
+                      height: 280
                     }}
                   />
                 }
