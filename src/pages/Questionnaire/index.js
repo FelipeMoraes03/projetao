@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useNavigation } from '@react-navigation/native'
 import { KeyboardAvoidingView, Platform, ScrollView  } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import {
   Container,
@@ -13,6 +14,9 @@ import {
   AdvanceButtonText,
   InputContainer,
   Input,
+  Option,
+  OptionText,
+  OptionCheck,
 } from './styles'
 
 
@@ -36,41 +40,45 @@ const stagesConfig = [
   {
     label: "Qual dos seguintes termos representa a diferença entre a receita total e os custos totais de um negócio?",
     items: [
-      { label: 'Lucro Líquido', value: "rightAnswer" },
-      { label: 'Margem de Lucro', value: "wrongAnswer1" },
-      { label: 'Fluxo de Caixa', value: "wrongAnswer2" },
-      { label: 'Despesas Operacionais', value: "wrongAnswer3" },
+      'Lucro Líquido',
+      'Margem de Lucro',
+      'Fluxo de Caixa',
+      'Despesas Operacionais',
     ],
+    answerIndex: 0,
     fontSize: 16
   },
   {
     label: "Um microempreendedor deseja calcular a margem de lucro de seus produtos. Qual a fórmula correta para calcular a margem de lucro?",
     items: [
-      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Receita Total', value: "wrongAnswer1" },
-      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Custo Total', value: "rightAnswer" },
-      { label: 'Margem de Lucro = (Receita Total / Custo Total) * 100', value: "wrongAnswer2" },
-      { label: 'Margem de Lucro = (Custo Total / Receita Total) * 100', value: "wrongAnswer3" },
+      'Margem de Lucro = (Receita Total - Custo Total) / Receita Total',
+      'Margem de Lucro = (Receita Total - Custo Total) / Custo Total',
+      'Margem de Lucro = (Receita Total / Custo Total) * 100',
+      'Margem de Lucro = (Custo Total / Receita Total) * 100',
     ],
+    answerIndex: 1,
     fontSize: 13
   },
   {
     label: "Ao expandir um negócio, um microempreendedor precisa decidir entre financiamento de curto prazo e financiamento de longo prazo. Qual das seguintes afirmativas é verdadeira em relação a essas opções?",
     items: [
-      { label: 'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.', value: "wrongAnswer1" },
-      { label: 'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.', value: "rightAnswer" },
-      { label: 'Financiamento de curto prazo é menos arriscado devido a obrigações de pagamento mais longas.', value: "wrongAnswer2" },
-      { label: 'Financiamento de longo prazo é apropriado para investimentos de curto prazo.', value: "wrongAnswer3" },
+      'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.',
+      'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.',
+      'Financiamento de curto prazo é menos arriscado devido a obrigações de pagamento mais longas.',
+      'Financiamento de longo prazo é apropriado para investimentos de curto prazo.',
     ],
+    answerIndex: 1,
     fontSize: 11
   },
   {
     label: "Um microempreendedor está considerando a diversificação de seus investimentos. Qual das seguintes opções de investimento é mais apropriada para reduzir o risco do portfólio?",
     items: [
-      { label: 'Investir todo o capital em ações de uma única empresa.', value: "wrongAnswer1" },
-      { label: 'Manter todo o capital em uma conta poupança.', value: "wrongAnswer2" },
-      { label: 'Diversificar o investimento em diferentes classes de ativos, como ações e títulos.', value: "rightAnswer" },
-      { label: 'Investir apenas em setores relacionados ao negócio principal.', value: "wrongAnswer3" },
+      'Investir todo o capital em ações de uma única empresa.',
+      'Manter todo o capital em uma conta poupança.',
+      'Diversificar o investimento em diferentes classes de ativos, como ações e títulos.',
+      'Investir apenas em setores relacionados ao negócio principal.',
     ],
+    answerIndex: 2,
     fontSize: 11
   }
 ]
@@ -81,30 +89,33 @@ const Questionnaire = () => {
   const [legalNature, setLegalNature] = useState(null)
   const [segment, setSegment] = useState('')
   const [userName, setuserName] = useState('')
-  const [level, setLevel] = useState(null)
 
   const [openLegalNature, setOpenLegalNature] = useState(false)
-  const [openSegment, setOpenSegment] = useState(false)
   const [openLevel, setOpenLevel] = useState(false)
 
   const [stage, setStage] = useState(0)
+  const [optionSelected, setOptionSelected] = useState(-1)
+
+  const handleOptionSelection = useCallback((indexLesson) => {
+    setOptionSelected(indexLesson)
+  }, [])
 
   const handleNextStage = useCallback(() => {
     if (stage == 0) {
       if (segment && legalNature) {
         setStage(stage+1)
       }
-    } else if (level == "rightAnswer") {
+    } else if (stagesConfig[stage+1].answerIndex == optionSelected) {
       if (stage < (stagesConfig.length)-2) {
         setStage(stage+1)
-        setLevel(null)
+        setOptionSelected(-1)
       } else {
         navigation.navigate('Tab', {segment, legalNature})
       }
-    } else if (level) {
+    } else if (optionSelected >= 0) {
       navigation.navigate('Tab', {segment, legalNature})
     }
-  }, [stage, level, segment, legalNature])
+  }, [stage, optionSelected, segment, legalNature])
 
   return (
     <KeyboardAvoidingView
@@ -127,7 +138,6 @@ const Questionnaire = () => {
               stage == 0
                 ?
                   <>
-
                     <SelectLabel>Nome</SelectLabel>
                     <InputContainer>
                       <Input
@@ -160,26 +170,33 @@ const Questionnaire = () => {
                     </InputContainer>
 
                   </>
-                : <>
-                    <SelectLabel style={{ textAlign: 'center' }}>
-                      {stagesConfig[stage+1].label}
-                    </SelectLabel>
-                    <DropDownPicker
-                      open={openLevel}
-                      value={level}
-                      items={stagesConfig[stage+1].items}
-                      setOpen={setOpenLevel}
-                      setValue={setLevel}
-                      zIndex={3000} // Ensure this is greater for the upper picker
-                      zIndexInverse={1000}
-                      textStyle={{ color: 'grey', fontSize: stagesConfig[stage+1].fontSize}}
-                      placeholder='Selecione'
-                    />
-                  </>
-            }
-            
+            : <>
+                <SelectLabel style={{ textAlign: 'center', marginBottom: -10 }}>
+                  {stagesConfig[stage+1].label}
+                </SelectLabel>
+                <Container style={{ borderWidth: 0 }}>
+                  {
+                    Array.from({ length: 4 }).map((_, index) => {
+                      return (
+                        <Option
+                          onPress={() => handleOptionSelection(index)}
+                          disabled={index < 0}
+                          key={index}
+                          style={
+                            { marginTop: 16, borderColor: optionSelected === index ? '#10E873' : 'grey', }
+                          }
+                          isBlocked={index < 0}
+                        >
+                          <OptionText>{stagesConfig[stage+1].items[index]}</OptionText>
+                              {optionSelected === index && <MaterialIcons name='check' size={15} color='#10E873' />}
+                        </Option>
+                      )
+                    })
+                  }
+                </Container>
+              </>
+    }
           </SelectContainer>
-
           <AdvanceButton onPress={handleNextStage}>
             <AdvanceButtonText>Avançar</AdvanceButtonText>
           </AdvanceButton>
