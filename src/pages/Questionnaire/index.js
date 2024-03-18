@@ -1,11 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useNavigation } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView, LogBox } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, LogBox, View, Image, Text } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-
 
 import {
   Container,
@@ -17,8 +17,11 @@ import {
   AdvanceButtonText,
   InputContainer,
   Input,
+  Option,
+  OptionText,
+  GreyContainer,
+  MessageContainer,
 } from './styles'
-
 
 const stagesConfig = [
   {
@@ -40,42 +43,46 @@ const stagesConfig = [
   {
     label: "Qual dos seguintes termos representa a diferença entre a receita total e os custos totais de um negócio?",
     items: [
-      { label: 'Lucro Líquido', value: "rightAnswer" },
-      { label: 'Margem de Lucro', value: "wrongAnswer1" },
-      { label: 'Fluxo de Caixa', value: "wrongAnswer2" },
-      { label: 'Despesas Operacionais', value: "wrongAnswer3" },
+      'Lucro Líquido',
+      'Margem de Lucro',
+      'Fluxo de Caixa',
+      'Despesas Operacionais',
     ],
+    answerIndex: 0,
     fontSize: 16
   },
   {
-    label: "Um microempreendedor deseja calcular a margem de lucro de seus produtos. Qual a fórmula correta para calcular a margem de lucro?",
+    label: "Um microempreendedor deseja calcular a margem de lucro de seus produtos. Qual a fórmula para calcular a margem de lucro?",
     items: [
-      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Receita Total', value: "wrongAnswer1" },
-      { label: 'Margem de Lucro = (Receita Total - Custo Total) / Custo Total', value: "rightAnswer" },
-      { label: 'Margem de Lucro = (Receita Total / Custo Total) * 100', value: "wrongAnswer2" },
-      { label: 'Margem de Lucro = (Custo Total / Receita Total) * 100', value: "wrongAnswer3" },
+      'Margem de Lucro = (Receita Total - Custo Total) / Receita Total',
+      'Margem de Lucro = (Receita Total - Custo Total) / Custo Total',
+      'Margem de Lucro = (Receita Total / Custo Total) * 100',
+      'Margem de Lucro = (Custo Total / Receita Total) * 100',
     ],
+    answerIndex: 1,
     fontSize: 13
   },
   {
-    label: "Ao expandir um negócio, um microempreendedor precisa decidir entre financiamento de curto prazo e financiamento de longo prazo. Qual das seguintes afirmativas é verdadeira em relação a essas opções?",
+    label: "Ao expandir um negócio, é necessário decidir entre financiamento a curto ou longo prazo. Indique a opção verdadeira sobre o tema:",
     items: [
-      { label: 'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.', value: "wrongAnswer1" },
-      { label: 'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.', value: "rightAnswer" },
-      { label: 'Financiamento de curto prazo é menos arriscado devido a obrigações de pagamento mais longas.', value: "wrongAnswer2" },
-      { label: 'Financiamento de longo prazo é apropriado para investimentos de curto prazo.', value: "wrongAnswer3" },
+      'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.',
+      'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.',
+      'Financiamento de curto prazo é menos arriscado devido a obrigações de pagamento mais longas.',
+      'Financiamento de longo prazo é apropriado para investimentos de curto prazo.',
     ],
+    answerIndex: 1,
     fontSize: 11
   },
   {
-    label: "Um microempreendedor está considerando a diversificação de seus investimentos. Qual das seguintes opções de investimento é mais apropriada para reduzir o risco do portfólio?",
+    label: "Um microempreendedor está considerando diversificar seus investimentos. O que é mais apropriado para reduzir o risco do portfólio?",
     items: [
-      { label: 'Investir todo o capital em ações de uma única empresa.', value: "wrongAnswer1" },
-      { label: 'Manter todo o capital em uma conta poupança.', value: "wrongAnswer2" },
-      { label: 'Diversificar o investimento em diferentes classes de ativos, como ações e títulos.', value: "rightAnswer" },
-      { label: 'Investir apenas em setores relacionados ao negócio principal.', value: "wrongAnswer3" },
+      'Investir todo o capital em ações de uma única empresa.',
+      'Manter todo o capital em uma conta poupança.',
+      'Diversificar o investimento em diferentes classes de ativos, como ações e títulos.',
+      'Investir apenas em setores relacionados ao negócio principal.',
     ],
-    fontSize: 11
+    answerIndex: 2,
+    fontSize: 12
   }
 ]
 
@@ -85,10 +92,8 @@ const Questionnaire = () => {
   const [legalNature, setLegalNature] = useState(null)
   const [segment, setSegment] = useState('')
   const [userName, setuserName] = useState('')
-  const [level, setLevel] = useState(null)
 
   const [openLegalNature, setOpenLegalNature] = useState(false)
-  const [openSegment, setOpenSegment] = useState(false)
   const [openLevel, setOpenLevel] = useState(false)
 
   const [stage, setStage] = useState(0)
@@ -101,25 +106,32 @@ const Questionnaire = () => {
     catch (error) { console.log('error', error) }
   }
 
+  const [optionSelected, setOptionSelected] = useState(-1)
+
+  const handleOptionSelection = useCallback((indexLesson) => {
+    setOptionSelected(indexLesson)
+  }, [])
 
   const handleNextStage = useCallback(() => {
     if (stage == 0) {
       if (segment && legalNature) {
         setStage(stage + 1)
       }
-    } else if (level == "rightAnswer") {
-      if (stage < (stagesConfig.length) - 2) {
-        setStage(stage + 1)
-        setLevel(null)
+    } else if (stagesConfig[stage+1].answerIndex == optionSelected) {
+      if (stage < (stagesConfig.length)-2) {
+        setStage(stage+1)
+        setOptionSelected(-1)
       } else {
-        navigation.navigate('Tab', { segment, legalNature, userName })
+        const suggestedLesson = stage-1
+        navigation.navigate('Tab', { segment, legalNature, userName, suggestedLesson })
         _storeData();
       }
-    } else if (level) {
-      navigation.navigate('Tab', { segment, legalNature, userName })
+    } else if (optionSelected >= 0) {
+      const suggestedLesson = stage-1
+      navigation.navigate('Tab', { segment, legalNature, userName, suggestedLesson })
       _storeData();
     }
-  }, [stage, level, segment, legalNature, userName])
+  }, [stage, optionSelected, segment, legalNature, userName])
 
   return (
     <KeyboardAvoidingView
@@ -128,12 +140,21 @@ const Questionnaire = () => {
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <ScrollView keyboardShouldPersistTaps='handled' contentContainerStyle={{ flexGrow: 1 }}>
-        <Container>
-          <Title>{stage == 0 ? 'Qual o seu perfil?' : 'Nível de conhecimento'}</Title>
+        <Container marginTop={stage === 0 ? 0 : -52}>
+        { stage === 0 && (<Title>Qual o seu perfil?</Title>) }
           <Description>
             {stage == 0
               ? 'Para melhor atender suas necessidades primeiro precisamos entender melhor sobre você, seu negócio e seus conhecimentos sobre finanças.'
-              : 'Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.'
+              : <GreyContainer>
+                  <View
+                    style={{ flexDirection: 'row' }}
+                  >
+                    <Image source={require('../../../assets/Chat/sofia.png')} style={{marginTop : 40}}/>
+                    <MessageContainer>            
+                      <Text style={{textAlign: 'justify'}}>Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.</Text>
+                    </MessageContainer>
+                  </View>
+                </GreyContainer>
             }
           </Description>
 
@@ -175,28 +196,37 @@ const Questionnaire = () => {
                     />
                   </InputContainer>
 
-                </>
-                : <>
-                  <SelectLabel style={{ textAlign: 'center' }}>
-                    {stagesConfig[stage + 1].label}
-                  </SelectLabel>
-                  <DropDownPicker
-                    open={openLevel}
-                    value={level}
-                    items={stagesConfig[stage + 1].items}
-                    setOpen={setOpenLevel}
-                    setValue={setLevel}
-                    zIndex={3000} // Ensure this is greater for the upper picker
-                    zIndexInverse={1000}
-                    textStyle={{ color: 'grey', fontSize: stagesConfig[stage + 1].fontSize }}
-                    placeholder='Selecione'
-                  />
-                </>
-            }
-
+                  </>
+            : <>
+                <SelectLabel style={{ textAlign: 'center', marginTop: 15, fontWeight: 'bold'}}>
+                  {stagesConfig[stage+1].label}
+                </SelectLabel>
+                <Container style={{ borderWidth: 0, marginTop:-9}}>
+                  {
+                    Array.from({ length: 4 }).map((_, index) => {
+                      return (
+                        <Option
+                          onPress={() => handleOptionSelection(index)}
+                          disabled={index < 0}
+                          key={index}
+                          style={
+                            { marginTop: 10, borderColor: optionSelected === index ? '#10E873' : 'grey',  textAlign: 'justify'}
+                          }
+                          isBlocked={index < 0}
+                        >
+                          <OptionText 
+                            style={{ fontSize:stagesConfig[stage+1].fontSize }}
+                          > {stagesConfig[stage+1].items[index]} </OptionText>
+                              {optionSelected === index && <MaterialIcons name='check' size={15} color='#10E873' />}
+                        </Option>
+                      )
+                    })
+                  }
+                </Container>
+              </>
+    }
           </SelectContainer>
-
-          <AdvanceButton onPress={handleNextStage}>
+          <AdvanceButton onPress={handleNextStage} marginTop={stage === 0 ? 50 : 0}>
             <AdvanceButtonText>Avançar</AdvanceButtonText>
           </AdvanceButton>
         </Container>

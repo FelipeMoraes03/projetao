@@ -28,7 +28,7 @@ const Tab = createBottomTabNavigator()
 
 function MyTabs() {
   const route = useRoute()
-  const { segment, legalNature, userName } = route.params
+  const { segment, legalNature, userName, suggestedLesson } = route.params
   
   return (
     <Tab.Navigator

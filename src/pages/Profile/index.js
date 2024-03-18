@@ -15,6 +15,7 @@ import {
 
 const Profile = ({ route }) => {
   const { legalNature, segment, userName } = route.params;
+  const userFirstName = userName.split(" ")[0]
   console.log("route.params", route.params)
 
   return (
@@ -45,7 +46,7 @@ const Profile = ({ route }) => {
         </Details>
 
         <Details>
-          <Text style={{ fontWeight: 'bold' }} >Email:</Text> isamaria@gmail.com
+          <Text style={{ fontWeight: 'bold' }} >Email:</Text> {userFirstName}@gmail.com
         </Details>
       </DetailsContainer>
 

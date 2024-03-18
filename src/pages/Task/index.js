@@ -41,7 +41,7 @@ const Task = () => {
     },
     {
       title: 'Sistemas de Amortização',
-      lessons: ['Introdução aos Sistemas de Amortização', 'Sistema de Amortização Constante', 'Sistema de Amortização Francês  -SAF ou Tabela Price', 'Gestão de Emprestimos e Financiamento']
+      lessons: ['Introdução aos Sistemas de Amortização', 'Sistema de Amortização Constante', 'Sistema de Amortização Francês -SAF ou Tabela Price', 'Gestão de Emprestimos e Financiamento']
     }
   ]
 
