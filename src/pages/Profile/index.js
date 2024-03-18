@@ -14,7 +14,8 @@ import {
 } from './styles'
 
 const Profile = ({ route }) => {
-  const { legalNature, segment } = route.params;
+  const { legalNature, segment, userName } = route.params;
+  console.log("route.params", route.params)
 
   return (
     <Container>
@@ -31,7 +32,7 @@ const Profile = ({ route }) => {
             marginLeft: 20
           }}
         >
-          <Name>Isabela Maria</Name>
+          <Name>{userName}</Name>
           <BusinessType>{legalNature} - {segment}</BusinessType>
         </View>
       </View>
@@ -40,7 +41,7 @@ const Profile = ({ route }) => {
         <DetailsTitle>Perfil</DetailsTitle>
 
         <Details>
-          <Text style={{ fontWeight: 'bold' }} >Nome completo:</Text> Isabela Maria da Silva
+          <Text style={{ fontWeight: 'bold' }} >Nome completo:</Text> {userName}
         </Details>
 
         <Details>

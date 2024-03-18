@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useNavigation } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView, LogBox  } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, LogBox } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 
@@ -23,17 +24,17 @@ const stagesConfig = [
   {
     items: [
       { label: 'MEI - Microempreendedor Individual', value: 'MEI' },
-      { label: 'EI - Empresario Individual', value: 'EI'},
-      { label: 'LTDA - Sociedade Limitada', value: 'LTDA'},
-      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'SLU'},
-      {label: 'SS- Sociedade Simples Limitada e Pura', value: 'SS'},
+      { label: 'EI - Empresario Individual', value: 'EI' },
+      { label: 'LTDA - Sociedade Limitada', value: 'LTDA' },
+      { label: 'SLU - Sociedade Unipessoal Limitada', value: 'SLU' },
+      { label: 'SS- Sociedade Simples Limitada e Pura', value: 'SS' },
     ]
   },
   {
     items: [
-      { label: 'Comércio', value: 'Comércio'},
-      { label: 'Indútria', value: 'Indústria'},
-      { label: 'Serviços', value: 'Serviços'},
+      { label: 'Comércio', value: 'Comércio' },
+      { label: 'Indútria', value: 'Indústria' },
+      { label: 'Serviços', value: 'Serviços' },
     ]
   },
   {
@@ -92,22 +93,33 @@ const Questionnaire = () => {
 
   const [stage, setStage] = useState(0)
 
+  _storeData = async () => {
+    try {
+      await AsyncStorage.setItem("user", userName);
+    }
+
+    catch (error) { console.log('error', error) }
+  }
+
+
   const handleNextStage = useCallback(() => {
     if (stage == 0) {
       if (segment && legalNature) {
-        setStage(stage+1)
+        setStage(stage + 1)
       }
     } else if (level == "rightAnswer") {
-      if (stage < (stagesConfig.length)-2) {
-        setStage(stage+1)
+      if (stage < (stagesConfig.length) - 2) {
+        setStage(stage + 1)
         setLevel(null)
       } else {
-        navigation.navigate('Tab', {segment, legalNature})
+        navigation.navigate('Tab', { segment, legalNature, userName })
+        _storeData();
       }
     } else if (level) {
-      navigation.navigate('Tab', {segment, legalNature})
+      navigation.navigate('Tab', { segment, legalNature, userName })
+      _storeData();
     }
-  }, [stage, level, segment, legalNature])
+  }, [stage, level, segment, legalNature, userName])
 
   return (
     <KeyboardAvoidingView
@@ -129,58 +141,59 @@ const Questionnaire = () => {
             {
               stage == 0
                 ?
-                  <>
+                <>
 
-                    <SelectLabel>Nome</SelectLabel>
-                    <InputContainer>
-                      <Input
-                        keyboardAppearance='dark'
-                        onChangeText={setuserName}
-                        value={userName}
-                      />
-                    </InputContainer>
-
-                    <SelectLabel>Natureza jurídica</SelectLabel>
-                    <DropDownPicker
-                      open={openLegalNature}
-                      value={legalNature}
-                      items={stagesConfig[0].items}
-                      setOpen={setOpenLegalNature}
-                      setValue={setLegalNature}
-                      zIndex={3000} // Ensure this is greater for the upper picker
-                      zIndexInverse={1000}
-                      textStyle={{ color: 'grey'}}
-                      placeholder='Selecione'
+                  <SelectLabel>Nome</SelectLabel>
+                  <InputContainer>
+                    <Input
+                      keyboardAppearance='dark'
+                      onChangeText={newName => setuserName(newName)}
+                      defaultValue={userName}
+                      value={userName}
                     />
+                  </InputContainer>
 
-                    <SelectLabel>Segmento de atuação</SelectLabel>
-                    <InputContainer>
-                      <Input
-                        keyboardAppearance='dark'
-                        onChangeText={setSegment}
-                        value={segment}
-                      />
-                    </InputContainer>
+                  <SelectLabel>Natureza jurídica</SelectLabel>
+                  <DropDownPicker
+                    open={openLegalNature}
+                    value={legalNature}
+                    items={stagesConfig[0].items}
+                    setOpen={setOpenLegalNature}
+                    setValue={setLegalNature}
+                    zIndex={3000} // Ensure this is greater for the upper picker
+                    zIndexInverse={1000}
+                    textStyle={{ color: 'grey' }}
+                    placeholder='Selecione'
+                  />
 
-                  </>
+                  <SelectLabel>Segmento de atuação</SelectLabel>
+                  <InputContainer>
+                    <Input
+                      keyboardAppearance='dark'
+                      onChangeText={setSegment}
+                      value={segment}
+                    />
+                  </InputContainer>
+
+                </>
                 : <>
-                    <SelectLabel style={{ textAlign: 'center' }}>
-                      {stagesConfig[stage+1].label}
-                    </SelectLabel>
-                    <DropDownPicker
-                      open={openLevel}
-                      value={level}
-                      items={stagesConfig[stage+1].items}
-                      setOpen={setOpenLevel}
-                      setValue={setLevel}
-                      zIndex={3000} // Ensure this is greater for the upper picker
-                      zIndexInverse={1000}
-                      textStyle={{ color: 'grey', fontSize: stagesConfig[stage+1].fontSize}}
-                      placeholder='Selecione'
-                    />
-                  </>
+                  <SelectLabel style={{ textAlign: 'center' }}>
+                    {stagesConfig[stage + 1].label}
+                  </SelectLabel>
+                  <DropDownPicker
+                    open={openLevel}
+                    value={level}
+                    items={stagesConfig[stage + 1].items}
+                    setOpen={setOpenLevel}
+                    setValue={setLevel}
+                    zIndex={3000} // Ensure this is greater for the upper picker
+                    zIndexInverse={1000}
+                    textStyle={{ color: 'grey', fontSize: stagesConfig[stage + 1].fontSize }}
+                    placeholder='Selecione'
+                  />
+                </>
             }
-            
+
           </SelectContainer>
 
           <AdvanceButton onPress={handleNextStage}>
