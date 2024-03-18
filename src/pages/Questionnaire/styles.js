@@ -109,5 +109,5 @@ export const MessageContainer = styled.View`
   margin-bottom: 12px;
   width: 260px;
   margin-left: 8px;
-  margin-top: 32px;
+  margin-top: 64px;
 `

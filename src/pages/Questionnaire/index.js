@@ -63,7 +63,7 @@ const stagesConfig = [
     fontSize: 13
   },
   {
-    label: "Ao expandir um negócio, um microempreendedor precisa decidir entre financiamento de curto prazo e financiamento de longo prazo. Qual das seguintes afirmativas é verdadeira em relação a essas opções?",
+    label: "Ao expandir um negócio, é necessário decidir entre financiamento a curto ou longo prazo. Indique a opção verdadeira sobre o tema:",
     items: [
       'Financiamento de curto prazo geralmente tem taxas de juros mais baixas.',
       'Financiamento de longo prazo é mais adequado para necessidades de capital de giro de curto prazo.',
@@ -74,7 +74,7 @@ const stagesConfig = [
     fontSize: 11
   },
   {
-    label: "Um microempreendedor está considerando a diversificação de seus investimentos. Qual das seguintes opções de investimento é mais apropriada para reduzir o risco do portfólio?",
+    label: "Um microempreendedor está considerando diversificar seus investimentos. O que é mais apropriado para reduzir o risco do portfólio?",
     items: [
       'Investir todo o capital em ações de uma única empresa.',
       'Manter todo o capital em uma conta poupança.',
@@ -82,7 +82,7 @@ const stagesConfig = [
       'Investir apenas em setores relacionados ao negócio principal.',
     ],
     answerIndex: 2,
-    fontSize: 11
+    fontSize: 12
   }
 ]
 
@@ -136,9 +136,9 @@ const Questionnaire = () => {
                   <View
                     style={{ flexDirection: 'row' }}
                   >
-                    <Image source={require('../../../assets/Chat/sofia.png')} />
+                    <Image source={require('../../../assets/Chat/sofia.png')} style={{marginTop : 40}}/>
                     <MessageContainer>            
-                      <Text>Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.</Text>
+                      <Text style={{textAlign: 'justify'}}>Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.</Text>
                     </MessageContainer>
                   </View>
                 </GreyContainer>
@@ -183,10 +183,10 @@ const Questionnaire = () => {
 
                   </>
             : <>
-                <SelectLabel style={{ textAlign: 'center', marginTop: 20 }}>
+                <SelectLabel style={{ textAlign: 'center', marginTop: 35, fontWeight: 'bold'}}>
                   {stagesConfig[stage+1].label}
                 </SelectLabel>
-                <Container style={{ borderWidth: 0}}>
+                <Container style={{ borderWidth: 0, marginTop:-9}}>
                   {
                     Array.from({ length: 4 }).map((_, index) => {
                       return (
@@ -195,7 +195,7 @@ const Questionnaire = () => {
                           disabled={index < 0}
                           key={index}
                           style={
-                            { marginTop: 16, borderColor: optionSelected === index ? '#10E873' : 'grey', }
+                            { marginTop: 10, borderColor: optionSelected === index ? '#10E873' : 'grey',  textAlign: 'justify'}
                           }
                           isBlocked={index < 0}
                         >
@@ -211,7 +211,7 @@ const Questionnaire = () => {
               </>
     }
           </SelectContainer>
-          <AdvanceButton onPress={handleNextStage} marginTop={stage === 0 ? 70 : 0}>
+          <AdvanceButton onPress={handleNextStage} marginTop={stage === 0 ? 50 : 0}>
             <AdvanceButtonText>Avançar</AdvanceButtonText>
           </AdvanceButton>
         </Container>
