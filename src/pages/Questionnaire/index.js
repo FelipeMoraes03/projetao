@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { useNavigation } from '@react-navigation/native'
-import { KeyboardAvoidingView, Platform, ScrollView  } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, LogBox, View, Image, Text } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+
+LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 
 import {
   Container,
@@ -16,7 +18,8 @@ import {
   Input,
   Option,
   OptionText,
-  OptionCheck,
+  GreyContainer,
+  MessageContainer,
 } from './styles'
 
 
@@ -124,12 +127,21 @@ const Questionnaire = () => {
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <ScrollView keyboardShouldPersistTaps='handled' contentContainerStyle={{ flexGrow: 1 }}>
-        <Container>
-          <Title>{stage == 0 ? 'Qual o seu perfil?' : 'Nível de conhecimento'}</Title>
+        <Container marginTop={stage === 0 ? 0 : -52}>
+        { stage === 0 && (<Title>Qual o seu perfil?</Title>) }
           <Description>
             {stage == 0
               ? 'Para melhor atender suas necessidades primeiro precisamos entender melhor sobre você, seu negócio e seus conhecimentos sobre finanças.'
-              : 'Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.'
+              : <GreyContainer>
+                  <View
+                    style={{ flexDirection: 'row' }}
+                  >
+                    <Image source={require('../../../assets/Chat/sofia.png')} />
+                    <MessageContainer>            
+                      <Text>Vamos avaliar seu nível de conhecimento, assim podemos atender melhor as suas dúvidas e lhe indicar a uma aula adequada a suas necessidades atuais.</Text>
+                    </MessageContainer>
+                  </View>
+                </GreyContainer>
             }
           </Description>
 
@@ -171,10 +183,10 @@ const Questionnaire = () => {
 
                   </>
             : <>
-                <SelectLabel style={{ textAlign: 'center', marginBottom: -10 }}>
+                <SelectLabel style={{ textAlign: 'center', marginTop: 20 }}>
                   {stagesConfig[stage+1].label}
                 </SelectLabel>
-                <Container style={{ borderWidth: 0 }}>
+                <Container style={{ borderWidth: 0}}>
                   {
                     Array.from({ length: 4 }).map((_, index) => {
                       return (
@@ -187,7 +199,9 @@ const Questionnaire = () => {
                           }
                           isBlocked={index < 0}
                         >
-                          <OptionText>{stagesConfig[stage+1].items[index]}</OptionText>
+                          <OptionText 
+                            style={{ fontSize:stagesConfig[stage+1].fontSize }}
+                          > {stagesConfig[stage+1].items[index]} </OptionText>
                               {optionSelected === index && <MaterialIcons name='check' size={15} color='#10E873' />}
                         </Option>
                       )
@@ -197,7 +211,7 @@ const Questionnaire = () => {
               </>
     }
           </SelectContainer>
-          <AdvanceButton onPress={handleNextStage}>
+          <AdvanceButton onPress={handleNextStage} marginTop={stage === 0 ? 70 : 0}>
             <AdvanceButtonText>Avançar</AdvanceButtonText>
           </AdvanceButton>
         </Container>

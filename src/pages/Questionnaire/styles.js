@@ -89,19 +89,25 @@ export const OptionText = styled.Text`
   font-size: 16px;
 `
 
-export const OptionCheck = styled.View`
-  height: 16px;
-  width: 16px;
-  border-width: 1.5px;
-  border-color: #09190E;
-  border-radius: 24px;
-  justify-content: center;
+export const GreyContainer = styled.View`
+  width: 375px;
+  height: 200px;
+  border-radius: 0 0 28px 28px;
+  background-color: #D9D9D9;
   align-items: center;
-  ${props => 
-    props.optionSelected &&
-    css`
-      background-color: #09190E;
-      border: none;
-    `
-  }
+  justify-content: center;
+  margin-bottom: 0px;
+`
+
+export const MessageContainer = styled.View`
+  background-color: #10E873;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 20px;
+  border-top-left-radius: 0px;
+  margin-bottom: 12px;
+  width: 260px;
+  margin-left: 8px;
+  margin-top: 32px;
 `
