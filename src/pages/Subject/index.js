@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import {
   Container,
@@ -17,6 +18,7 @@ import {
   Modal,
   GreyContainer
 } from './styles';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const tutorialTexts = [
   'Oi, eu sou a Sofia, a assistente de finanças da Enpi. Hoje, estou aqui para te apresentar como o nosso app funciona, vamos nessa?',
@@ -33,6 +35,23 @@ const Subject = ({ route }) => {
   const [optionSelected, setOptionSelected] = useState(-1)
 
   const [section, setSection] = useState(0)
+
+  const [userName, getUserName] = useState()
+
+
+  _retriveData = async () => {
+    try {
+      const userName = await AsyncStorage.getItem('user')
+      getUser = userName
+      return userName
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+
+  _retriveData().then((userName) => getUserName(userName))
+
 
   const handleOptionSelection = useCallback((index) => {
     setOptionSelected(index)
@@ -58,50 +77,50 @@ const Subject = ({ route }) => {
             >
               <Image source={require('../../../assets/Chat/sofia.png')} />
 
-              <MessageContainer>            
+              <MessageContainer>
                 <Text>{tutorialTexts[section]}</Text>
               </MessageContainer>
             </View>
 
-            { section == 4 && <Image source={require('../../../assets/Profile/coin.png')} />}
+            {section == 4 && <Image source={require('../../../assets/Profile/coin.png')} />}
           </View>
 
           {section == 5
             ? <View
-                style={{ alignItems: 'center' }}
+              style={{ alignItems: 'center' }}
+            >
+              <TouchableOpacity
+                style={{ paddingHorizontal: 24, paddingVertical: 20, backgroundColor: '#10E873', borderRadius: 10 }}
+                onPress={() => navigation.navigate('Questionnaire')}
               >
-                <TouchableOpacity
-                  style={{ paddingHorizontal: 24, paddingVertical: 20, backgroundColor: '#10E873', borderRadius: 10 }}
-                  onPress={() => navigation.navigate('Questionnaire')}
-                >
-                  <Text style={{ fontSize: 18 }} >Iniciar a minha jornada</Text>
-                </TouchableOpacity>
+                <Text style={{ fontSize: 18 }} >Iniciar a minha jornada</Text>
+              </TouchableOpacity>
 
+              <TouchableOpacity
+                style={{ paddingHorizontal: 40, paddingVertical: 12, backgroundColor: '#D9D9D9', borderRadius: 10, marginTop: 20 }}
+                onPress={() => setSection(section - 1)}
+              >
+                <Text style={{ fontSize: 12 }} >Voltar</Text>
+              </TouchableOpacity>
+            </View>
+            : <ArrowContainer isStart={section == 0}>
+              {
+                section != 0 &&
                 <TouchableOpacity
-                  style={{ paddingHorizontal: 40, paddingVertical: 12, backgroundColor: '#D9D9D9', borderRadius: 10, marginTop: 20 }}
+                  style={{ paddingHorizontal: 24, paddingVertical: 8, backgroundColor: '#D9D9D9', borderRadius: 10 }}
                   onPress={() => setSection(section - 1)}
                 >
-                  <Text style={{ fontSize: 12 }} >Voltar</Text>
+                  <MaterialIcons name='arrow-back' size={40} color='#09190E' style={{ height: 40, width: 40 }} />
                 </TouchableOpacity>
-              </View>
-            : <ArrowContainer isStart={section == 0}>
-                {
-                  section != 0 &&
-                  <TouchableOpacity
-                    style={{ paddingHorizontal: 24, paddingVertical: 8, backgroundColor: '#D9D9D9', borderRadius: 10 }}
-                    onPress={() => setSection(section - 1)}
-                  >
-                    <MaterialIcons name='arrow-back' size={40} color='#09190E' style={{ height: 40, width: 40 }} />
-                  </TouchableOpacity>
-                }
+              }
 
-                <TouchableOpacity
-                  style={{ paddingHorizontal: 24, paddingVertical: 8, backgroundColor: '#10E873', borderRadius: 10 }}
-                  onPress={() => setSection(section + 1)}
-                >
-                  <MaterialIcons name='arrow-forward' size={40} color='#09190E' style={{ height: 40, width: 40 }} />
-                </TouchableOpacity>          
-              </ArrowContainer>
+              <TouchableOpacity
+                style={{ paddingHorizontal: 24, paddingVertical: 8, backgroundColor: '#10E873', borderRadius: 10 }}
+                onPress={() => setSection(section + 1)}
+              >
+                <MaterialIcons name='arrow-forward' size={40} color='#09190E' style={{ height: 40, width: 40 }} />
+              </TouchableOpacity>
+            </ArrowContainer>
           }
         </Modal>
       }
@@ -116,8 +135,8 @@ const Subject = ({ route }) => {
             >
               <Image source={require('../../../assets/Chat/sofia.png')} />
 
-              <MessageContainer>            
-                <Text>Bom dia Isabela! O que vamos aprender hoje?</Text>
+              <MessageContainer>
+                <Text>Bom dia {userName}! O que vamos aprender hoje?</Text>
               </MessageContainer>
             </View>
           </GreyContainer>
@@ -137,11 +156,11 @@ const Subject = ({ route }) => {
               >
                 <OptionText>{optionsNames[index]}</OptionText>
 
-                  <OptionCheck
-                    // optionSelected={optionSelected === index}
-                  >
-                    {/* {optionSelected === index && <MaterialIcons name='check' size={15} color='#fff' />} */}
-                  </OptionCheck>
+                <OptionCheck
+                // optionSelected={optionSelected === index}
+                >
+                  {/* {optionSelected === index && <MaterialIcons name='check' size={15} color='#fff' />} */}
+                </OptionCheck>
               </Option>
             )
           })

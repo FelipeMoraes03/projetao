@@ -28,7 +28,7 @@ const Tab = createBottomTabNavigator()
 
 function MyTabs() {
   const route = useRoute()
-  const { segment, legalNature } = route.params
+  const { segment, legalNature, userName } = route.params
   
   return (
     <Tab.Navigator
@@ -44,7 +44,7 @@ function MyTabs() {
       <Tab.Screen 
         name='Chat' 
         component={Chat} 
-        initialParams={{legalNature: legalNature, segment: segment}}
+        initialParams={{legalNature: legalNature, segment: segment, userName: userName}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }} >
@@ -56,7 +56,7 @@ function MyTabs() {
 
       <Tab.Screen
         name='LessonRoutes' 
-        component={LessonRoutes} 
+        component={LessonRoutes}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }} >
@@ -69,7 +69,7 @@ function MyTabs() {
       <Tab.Screen 
         name='Profile' 
         component={Profile} 
-        initialParams={{legalNature: legalNature, segment: segment}}
+        initialParams={{legalNature: legalNature, segment: segment, userName: userName}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }} >
