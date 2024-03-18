@@ -43,7 +43,8 @@ const Subject = ({ route }) => {
     try {
       const userName = await AsyncStorage.getItem('user')
       getUser = userName
-      return userName
+      const userFirstName = userName.split(" ")[0]
+      return userFirstName
     } catch (error) {
       console.log('error', error)
     }

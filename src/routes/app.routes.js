@@ -29,6 +29,7 @@ const Tab = createBottomTabNavigator()
 function MyTabs() {
   const route = useRoute()
   const { segment, legalNature, userName, suggestedLesson } = route.params
+  const userFirstName = userName.split(" ")[0]
   
   return (
     <Tab.Navigator
@@ -44,7 +45,7 @@ function MyTabs() {
       <Tab.Screen 
         name='Chat' 
         component={Chat} 
-        initialParams={{legalNature: legalNature, segment: segment, userName: userName}}
+        initialParams={{legalNature: legalNature, segment: segment, userName: userFirstName}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }} >

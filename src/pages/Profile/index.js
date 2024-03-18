@@ -15,7 +15,8 @@ import {
 
 const Profile = ({ route }) => {
   const { legalNature, segment, userName } = route.params;
-  const userFirstName = userName.split(" ")[0]
+  let userFirstName = userName.split(" ")[0]
+  userFirstName = userFirstName.toLowerCase()
   console.log("route.params", route.params)
 
   return (
